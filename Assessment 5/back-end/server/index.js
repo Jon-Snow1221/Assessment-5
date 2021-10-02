@@ -1,14 +1,29 @@
-const express = require("express");
-const cors = require("cors");
+const express = require('express');
+const cors = require('cors');
 
 const app = express();
-
 
 app.use(cors());
 
 app.use(express.json()); // When we want to be able to accept JSON.
 
-app.get("/api/compliment", (req, res) => {
+let id = 4;
+const movies = [
+  {
+    id: 1,
+    name: 'Rocky'
+  },
+  {
+    id: 2,
+    name: 'The Dark Knight'
+  },
+  {
+    id: 3,
+    name: 'Interstellar'
+  }
+]
+
+app.get('/api/compliment', (req, res) => {
   const compliments = ["Gee, you're a smart cookie!",
 					 "Cool shirt!",
 					 "Your Javascript skills are stellar.",
@@ -22,7 +37,7 @@ app.get("/api/compliment", (req, res) => {
   
 });
 
-app.get("/api/fortune", (req, res) => {
+app.get('/api/fortune', (req, res) => {
   const fortunes = ["A beautiful, smart, and loving person will be coming into your life.",
 					 "A faithful friend is a strong defense.",
 					 "A golden egg of opportunity falls into your lap this month.",
@@ -38,9 +53,33 @@ app.get("/api/fortune", (req, res) => {
   
 });
 
-app.post("/api/movie",(req, res) => {
-  let movie = req.body.movie
-  res.status(200).send('User successfully added movie')
+app.get('/api/movies', (req, res) => {
+  
+  res.status(200).send(movies);
+
+})
+
+app.post('/api/movies', (req, res) => {
+  const { movie } = req.body;
+
+  movies.push({
+    id,
+    name: movie
+  });
+
+  id++;
+
+  res.sendStatus(200);
+})
+
+app.delete('/api/movies/:movieId', (req, res) => {
+  const tgtMovieId = parseInt(req.params.movieId)
+
+  const tgtIndex = movies.findIndex(movieObj => movieObj.id === tgtMovieId)
+
+  movies.splice(tgtIndex, 1);
+
+  res.status(200).send(movies);
 })
 
 
